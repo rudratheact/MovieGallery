@@ -7,16 +7,38 @@
 
 import Foundation
 
+enum Type{
+    case search, normal
+}
+
 class APICall{
     
     private var results = [Any]()
     private var dataTask: URLSessionDataTask?
     
-        func getPopularMoviesData(completion: @escaping (Result<MoviesData, Error>) -> Void) {
+    private var criteria = String()
+    
+    private var actionType:Type
+    
+    init(criteria: String, actionType:Type) {
+        self.criteria = criteria
+        self.actionType = actionType
+    }
+    
+    func makeURLString() -> String {
+        switch actionType {
+        case .search:
+            return "https://api.themoviedb.org/3/search/movie?api_key=\(API_KEY)&query=\(criteria)"
+        default:
+            return "https://api.themoviedb.org/3/movie/\(criteria)?api_key=\(API_KEY)&language=en-US&page=1"
+        }
+    }
+    
+        func getMoviesData(completion: @escaping (Result<MoviesData, Error>) -> Void) {
             
-            let popularMoviesURL = "https://api.themoviedb.org/3/movie/popular?api_key=\(API_KEY)&language=en-US&page=1"
+            let moviesURL = makeURLString()
             
-            guard let url = URL(string: popularMoviesURL) else {return}
+            guard let url = URL(string: moviesURL) else {return}
             
             // Create URL Session - work on the background
             dataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in

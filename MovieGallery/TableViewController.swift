@@ -7,18 +7,36 @@
 
 import UIKit
 
-class TableViewController: UITableViewController {
+class TableViewController: UITableViewController, UISearchBarDelegate {
 
+    @IBOutlet weak var searchMovies: UISearchBar!
+    
     private var viewModel = TableViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadPopularMoviesData()
+        searchMovies.delegate = self
+        
+        loadNowPlayingMoviesData(criteria: "now_playing", actionType: .normal)
+        self.title = "Now Playing"
+        tableView.reloadData()
     }
-
-    private func loadPopularMoviesData() {
-           viewModel.fetchPopularMoviesData { [weak self] in
+    
+    @IBAction func popularMovies(_ sender: UIBarButtonItem) {
+        loadNowPlayingMoviesData(criteria: "popular", actionType: .normal)
+        self.title = "Popular Movies"
+        tableView.reloadData()
+    }
+    
+    @IBAction func bestMovies(_ sender: UIBarButtonItem) {
+        loadNowPlayingMoviesData(criteria: "top_rated", actionType: .normal)
+        self.title = "Best Movies"
+        tableView.reloadData()
+    }
+    
+    private func loadNowPlayingMoviesData(criteria: String, actionType: Type) {
+        viewModel.fetchMoviesData(criteria: criteria, actionType: actionType){ [weak self] in
                self?.tableView.dataSource = self
                self?.tableView.reloadData()
            }
@@ -65,5 +83,13 @@ class TableViewController: UITableViewController {
         
     }
     
+    // MARK:- Search Bar
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){ // called when text changes (including clear)
+        print(searchText)
+        loadNowPlayingMoviesData(criteria: searchText, actionType: .search)
+        self.title = "Search Movies"
+        
+        tableView.reloadData()
+    }
 
 }

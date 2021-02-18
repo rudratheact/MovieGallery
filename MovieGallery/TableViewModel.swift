@@ -9,17 +9,18 @@ import Foundation
 
 class TableViewModel {
     
-    private var apiService = APICall()
-    private var popularMovies = [Movie]()
+    private var searchedMovies = [Movie]()
     
-    func fetchPopularMoviesData(completion: @escaping () -> ()) {
+    func fetchMoviesData(criteria: String, actionType: Type, completion: @escaping () -> ()) {
+        
+        let apiService = APICall(criteria: criteria, actionType: actionType)
         
         // weak self - prevent retain cycles
-        apiService.getPopularMoviesData { [weak self] (result) in
+        apiService.getMoviesData { [weak self] (result) in
             
             switch result {
             case .success(let listOf):
-                self?.popularMovies = listOf.movies
+                self?.searchedMovies = listOf.movies
                 completion()
             case .failure(let error):
                 // Something is wrong with the JSON file or the model
@@ -29,13 +30,13 @@ class TableViewModel {
     }
     
     func numberOfRowsInSection(section: Int) -> Int {
-        if popularMovies.count != 0 {
-            return popularMovies.count
+        if searchedMovies.count != 0 {
+            return searchedMovies.count
         }
         return 0
     }
     
     func cellForRowAt (indexPath: IndexPath) -> Movie {
-        return popularMovies[indexPath.row]
+        return searchedMovies[indexPath.row]
     }
 }
