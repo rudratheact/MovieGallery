@@ -1,2 +1,2 @@
 # MovieGallery
-Display recent and upcoming movie list from TMDb website
+Display recent and upcoming movie list from TMDb website with advance search option.
