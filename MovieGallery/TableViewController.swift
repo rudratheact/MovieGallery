@@ -23,6 +23,10 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         tableView.reloadData()
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+    
     @IBAction func popularMovies(_ sender: UIBarButtonItem) {
         loadNowPlayingMoviesData(criteria: "popular", actionType: .normal)
         self.title = "Popular Movies"

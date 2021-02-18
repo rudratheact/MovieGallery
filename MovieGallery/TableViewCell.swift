@@ -26,6 +26,8 @@ class TableViewCell: UITableViewCell {
     // Update the UI Views
         private func updateUI(title: String?, poster: String?) {
             
+            self.posterImage.layer.cornerRadius = 15
+            
             self.movieName.text = title
             guard let posterString = poster else {return}
             urlString = "https://image.tmdb.org/t/p/w300" + posterString
